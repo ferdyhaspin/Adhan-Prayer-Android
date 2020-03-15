@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Created by ferdyhaspin & ilhamelmujib on 15/03/20.
- * Copyright (c) 2020 Bank Syariah Mandiri - Super Apps All rights reserved.
+ * Created by ferdyhaspin on 15/03/20.
+ * Copyright (c) 2020 All rights reserved.
  */
 object Utils {
 

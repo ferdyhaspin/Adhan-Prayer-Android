@@ -5,8 +5,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 /**
- * Created by ferdyhaspin & ilhamelmujib on 13/03/20.
- * Copyright (c) 2020 Bank Syariah Mandiri - Super Apps All rights reserved.
+ * Created by ferdyhaspin on 13/03/20.
+ * Copyright (c) 2020 All rights reserved.
  */
 public abstract class PermissionUtil {
 

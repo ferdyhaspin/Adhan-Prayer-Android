@@ -6,8 +6,8 @@ import android.content.Intent
 import android.util.Log
 
 /**
- * Created by ferdyhaspin & ilhamelmujib on 13/03/20.
- * Copyright (c) 2020 Bank Syariah Mandiri - Super Apps All rights reserved.
+ * Created by ferdyhaspin on 13/03/20.
+ * Copyright (c) 2020 All rights reserved.
  */
 
 class PrayBootReceiver : BroadcastReceiver() {
