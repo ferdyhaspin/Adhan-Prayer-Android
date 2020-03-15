@@ -1,7 +1,7 @@
 # Adhan Prayer Android using Kotlin
 
 Features :
-- Prayer Times
-- Adhan Alarm
+- Prayer Times by Location
+- Adhan Alarm Notification
 
 Prayer Apps [Reference](https://github.com/alphamu/PrayTime-Android)
