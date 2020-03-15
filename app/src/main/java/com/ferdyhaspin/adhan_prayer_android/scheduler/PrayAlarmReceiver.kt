@@ -88,7 +88,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         var nameOfPrayerFound = ""
 
         for (prayer in prayerNames) {
-            if (prayer != SUNRISE || prayer != SUNSET) {
+            if (prayer != SUNRISE && prayer != SUNSET) {
                 val time = prayerTimes[prayer]
 
                 if (time != null) {
@@ -107,7 +107,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
 
         if (!nextAlarmFound) {
             for (prayer in prayerNames) {
-                if (prayer != SUNRISE || prayer != SUNSET) {
+                if (prayer != SUNRISE && prayer != SUNSET) {
                     val time = prayerTimes[prayer]
 
                     if (time != null) {
