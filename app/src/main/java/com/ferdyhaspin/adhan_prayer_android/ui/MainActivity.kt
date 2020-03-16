@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         val list = mutableListOf<Prayer>()
         for (i in 0 until prayerTimes.size) {
             val key = KEYS[i]
-            if (key != SUNSET){
+            if (key != SUNSET) {
                 val name = NAME_ID[i]
                 val time = prayerTimes[key]
                 val setting = settings.getInt(ALARM_FOR + key)
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
             }
         }
 
-        mAdapter = PrayerAdapter(list, this)
+        mAdapter = PrayerAdapter(list, this, Utils.getPrayerName(prayerTimes))
         rv_prayers.adapter = mAdapter
         rv_prayers.layoutManager = LinearLayoutManager(this)
         rv_prayers.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))

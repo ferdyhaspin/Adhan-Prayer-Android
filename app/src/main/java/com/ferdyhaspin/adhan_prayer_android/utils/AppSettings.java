@@ -293,7 +293,7 @@ public class AppSettings {
         set(getKeyFor(Key.ADJUST_METHOD, index), value);
     }
 
-    public int getTimeFormatFor(int index) {
+    int getTimeFormatFor(int index) {
         return getInt(getKeyFor(Key.TIME_FORMAT, index), DateFormat.is24HourFormat(mContextRef.get()) ? PrayTime.TIME_24 : PrayTime.TIME_12);
     }
 
