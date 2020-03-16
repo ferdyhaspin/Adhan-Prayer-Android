@@ -1,10 +1,18 @@
 package com.ferdyhaspin.adhan_prayer_android.adapter
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ferdyhaspin.adhan_prayer_android.R
 import com.ferdyhaspin.adhan_prayer_android.model.Prayer
@@ -39,16 +47,46 @@ class PrayerAdapter(
 
         fun init(prayer: Prayer) {
             itemView.apply {
+                val disable = prayer.key == Constants.SUNRISE
 
                 findViewById<TextView>(R.id.tv_name).text = prayer.name
                 findViewById<TextView>(R.id.tv_time).text = prayer.time
 
-                findViewById<ImageButton>(R.id.ib_notification).apply {
-                    if (prayer.key == Constants.SUNRISE || prayer.key == Constants.SUNSET) {
+                findViewById<ImageButton>(R.id.ib_notification).run {
+                    if (disable) {
                         isEnabled = false
-                        setBackgroundResource(R.drawable.ic_notification_off)
+                        background =
+                            ContextCompat.getDrawable(context, R.drawable.ic_notification_off)
                     }
                 }
+
+                setOnClickListener {
+                    if (!disable) {
+                        dialog(context, prayer.name)
+                    }
+                }
+            }
+        }
+
+        private fun dialog(context: Context, title: String) {
+            Dialog(context).run {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setContentView(R.layout.dialog_setting_alarm_adzan)
+                val metrics = context.resources.displayMetrics
+                val width = metrics.widthPixels
+                window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+                val mTitle = "Atur Notifikasi $title"
+                findViewById<TextView>(R.id.tv_title).apply {
+                    text = mTitle
+                }
+
+                findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                    dismiss()
+                }
+
+                show()
             }
         }
 

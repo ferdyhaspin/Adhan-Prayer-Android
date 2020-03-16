@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
             for (key in KEYS) {
                 settings.set(ALARM_FOR + key, true)
             }
-            settings.set(AppSettings.Key.USE_ADHAN, true)
             settings.set(AppSettings.Key.IS_INIT, true)
         }
 

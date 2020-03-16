@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Adhan-Prayer-Android</string>
+    <string name="suara_adzan">Suara adzan</string>
+    <string name="nonaktif">Nonaktif</string>
+    <string name="tanpa_suara_notif_saja">Tanpa suara (notif saja)</string>
+    <string name="batal">batal</string>
 </resources>

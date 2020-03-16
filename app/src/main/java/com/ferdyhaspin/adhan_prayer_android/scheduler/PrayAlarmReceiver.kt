@@ -34,7 +34,6 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
     }
 
     private lateinit var alarmManager: AlarmManager
-//    private lateinit var alarmIntent: PendingIntent
 
     override fun onReceive(context: Context, intent: Intent) {
         val prayerName = intent.getStringExtra(EXTRA_PRAYER_NAME)
@@ -84,7 +83,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         var nameOfPrayerFound = ""
 
         for (prayer in prayerNames) {
-            if (prayer != SUNRISE && prayer != SUNSET) {
+            if (prayer != SUNRISE) {
                 val time = prayerTimes[prayer]
 
                 if (time != null) {
@@ -103,7 +102,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
 
         if (!nextAlarmFound) {
             for (prayer in prayerNames) {
-                if (prayer != SUNRISE && prayer != SUNSET) {
+                if (prayer != SUNRISE) {
                     val time = prayerTimes[prayer]
 
                     if (time != null) {

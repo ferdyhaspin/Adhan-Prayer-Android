@@ -46,6 +46,6 @@ public interface Constants {
     String ISHA = "Isha";
 
     String[] KEYS = {FAJR, SUNRISE, DHUHR, ASR, SUNSET, MAGHRIB, ISHA};
-
+    String[] NAME_ID = {"Subuh (Fajr)", "Terbit", "Dzuhur", "Ashar", "Terbenam", "Maghrib", "Isya"};
 
 }
