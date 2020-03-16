@@ -4,6 +4,7 @@ import android.Manifest
 import android.location.Location
 import android.os.Bundle
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,50 +20,47 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCallback {
 
-    private val sIsAlarmInit = false
-    var mIndex = 0
-    private lateinit var mLastLocation: Location
-
-    private var mLocationHelper: LocationHelper? = null
-
+    private lateinit var mLocationHelper: LocationHelper
     private lateinit var settings: AppSettings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         settings = AppSettings.getInstance(this)
         //INIT APP
-        //INIT APP
-        if (!settings.getBoolean(AppSettings.Key.IS_INIT)) {
-            for (key in KEYS) {
-                settings.set(settings.getKeyFor(AppSettings.Key.IS_ALARM_SET, 0), true)
-                settings.set(settings.getKeyFor(AppSettings.Key.IS_FAJR_ALARM_SET, 0), true)
-                settings.set(settings.getKeyFor(AppSettings.Key.IS_DHUHR_ALARM_SET, 0), true)
-                settings.set(settings.getKeyFor(AppSettings.Key.IS_ASR_ALARM_SET, 0), true)
-                settings.set(settings.getKeyFor(AppSettings.Key.IS_MAGHRIB_ALARM_SET, 0), true)
-                settings.set(settings.getKeyFor(AppSettings.Key.IS_ISHA_ALARM_SET, 0), true)
-            }
-            settings.set(AppSettings.Key.USE_ADHAN, true)
-            settings.set(AppSettings.Key.IS_INIT, true)
-        }
+//        if (!settings.getBoolean(AppSettings.Key.IS_INIT)) {
+//            for (key in KEYS) {
+//                settings.set(settings.getKeyFor(AppSettings.Key.IS_ALARM_SET, 0), true)
+//                settings.set(settings.getKeyFor(AppSettings.Key.IS_FAJR_ALARM_SET, 0), true)
+//                settings.set(settings.getKeyFor(AppSettings.Key.IS_DHUHR_ALARM_SET, 0), true)
+//                settings.set(settings.getKeyFor(AppSettings.Key.IS_ASR_ALARM_SET, 0), true)
+//                settings.set(settings.getKeyFor(AppSettings.Key.IS_MAGHRIB_ALARM_SET, 0), true)
+//                settings.set(settings.getKeyFor(AppSettings.Key.IS_ISHA_ALARM_SET, 0), true)
+//            }
+//            settings.set(AppSettings.Key.USE_ADHAN, true)
+//            settings.set(AppSettings.Key.IS_INIT, true)
+//        }
 
         setContentView(R.layout.activity_main)
 
-        if (mLocationHelper == null) {
-            mLocationHelper = LocationHelper.newInstance()
-            supportFragmentManager
-                .beginTransaction().add(mLocationHelper!!, LOCATION_FRAGMENT)
-                .commit()
-        }
+        mLocationHelper = LocationHelper.newInstance()
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(mLocationHelper, LOCATION_FRAGMENT)
+            .commit()
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mLocationHelper.checkLocationPermissions()
     }
 
     private fun init() {
+        settings.setCalcMethodFor(0, PrayTime.SIHAT)
         val prayerTimes: LinkedHashMap<String, String> =
-            PrayTime.getPrayerTimes(
-                this,
-                mIndex,
-                mLastLocation.latitude,
-                mLastLocation.longitude
-            )
+            PrayTime.getPrayerTimes(this,0, settings.latFor, settings.lngFor)
 
         val list = mutableListOf<Prayer>()
         for (i in 0 until prayerTimes.size) {
@@ -87,29 +85,11 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         }
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        fetchLocation()
-    }
-
-    private fun fetchLocation() {
-        if (mLocationHelper != null) {
-            mLocationHelper!!.checkLocationPermissions()
-        }
-    }
-
     override fun onLocationSettingsFailed() {
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        updateAlarmStatus()
+        Toast.makeText(this, "onLocationSettingsFailed", Toast.LENGTH_LONG).show()
     }
 
     override fun onLocationChanged(location: Location) {
-        mLastLocation = location
         settings.latFor = location.latitude
         settings.lngFor = location.longitude
         init()

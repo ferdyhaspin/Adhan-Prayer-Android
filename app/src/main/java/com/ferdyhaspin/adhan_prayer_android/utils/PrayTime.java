@@ -38,6 +38,7 @@ public class PrayTime {
     public static final int EGYPT = 5; // Egyptian General Authority of Survey
     public static final int CUSTOM = 7; // CUSTOM Setting
     public static final int TEHRAN = 6; // Institute of Geophysics, University of TEHRAN
+    public static final int SIHAT = 8;
     // Juristic Methods
     public static final int SHAFII = 0; // SHAFII (standard)
     public static final int HANAFI = 1; // HANAFI
@@ -70,7 +71,7 @@ public class PrayTime {
     private double[] prayerTimesCurrent;
     private int[] offsets;
 
-    public PrayTime() {
+    PrayTime() {
         // Initialize vars
         this.setCalcMethod(0);
         this.setAsrJuristic(0);
@@ -141,6 +142,10 @@ public class PrayTime {
         // CUSTOM
         double[] Cvalues = {18, 1, 0, 0, 17};
         methodParams.put(CUSTOM, Cvalues);
+
+        // SIHAT/KEMENAG
+        double[] Svalues = {20, 1, 0, 0, 18};
+        methodParams.put(SIHAT, Svalues);
 
     }
 
@@ -664,7 +669,7 @@ public class PrayTime {
         prayers.setAsrJuristic(prayers.SHAFII);
         prayers.setAdjustHighLats(prayers.ANGLE_BASED);
 
-        int[] offsets = {0, 0, 0, 0, 0, 0, 0}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
+        int[] offsets = {2, -2, 3, 2, 2, 2, 2}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
         prayers.tune(offsets);
 
         Date now = new Date();
@@ -711,7 +716,7 @@ public class PrayTime {
         prayers.setAsrJuristic(settings.getAsrMethodSetFor(index));
         prayers.setAdjustHighLats(settings.getHighLatitudeAdjustmentFor(index));
 
-        int[] offsets = {0, 0, 0, 0, 0, 0, 0}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
+        int[] offsets = {2, -2, 3, 2, 2, 2, 2}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
         prayers.tune(offsets);
 
         Date now = new Date();

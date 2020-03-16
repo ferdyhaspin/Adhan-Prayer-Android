@@ -135,7 +135,6 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
             "set alarm for $nameOfPrayerFound, time ${Utils.convertLongToTime(then.timeInMillis)}"
         )
 
-        nameOfPrayerFound = getPrayerNameFromIndex(getPrayerIndexFromName(nameOfPrayerFound))
         intent.putExtra(EXTRA_PRAYER_NAME, nameOfPrayerFound)
         intent.putExtra(EXTRA_PRAYER_TIME, then.timeInMillis)
 
@@ -234,32 +233,6 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
             Log.w("CancelAlarmReceiver", se.message, se)
             //do nothing. We should always have permision in order to reach this screen.
         }
-    }
-
-    private fun getPrayerNameFromIndex(
-        prayerIndex: Int
-    ): String {
-        var prayerName = ""
-        when (prayerIndex) {
-            0 -> prayerName = FAJR
-            1 -> prayerName = DHUHR
-            2 -> prayerName = ASR
-            3 -> prayerName = MAGHRIB
-            4 -> prayerName = ISHA
-        }
-        return prayerName
-    }
-
-    private fun getPrayerIndexFromName(prayerName: String): Int {
-        val name = prayerName.toLowerCase(Locale.getDefault())
-        when (name[0]) {
-            'f' -> return 0
-            'd' -> return 1
-            'a' -> return 2
-            'm' -> return 3
-            'i' -> return 4
-        }
-        return -1
     }
 
     private fun getCalendarFromPrayerTime(cal: Calendar, prayerTime: String): Calendar {
