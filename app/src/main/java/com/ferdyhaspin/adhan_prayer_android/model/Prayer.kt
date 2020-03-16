@@ -8,6 +8,5 @@ data class Prayer(
     var key: String = "",
     var name: String = "",
     var time: String? = "",
-    var isAlarm: Boolean = true,
-    var isAdhan: Boolean = true
+    var setting: Int = 0
 )

@@ -8,14 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ferdyhaspin.adhan_prayer_android.R
 import com.ferdyhaspin.adhan_prayer_android.model.Prayer
+import com.ferdyhaspin.adhan_prayer_android.scheduler.PrayAlarmReceiver
 import com.ferdyhaspin.adhan_prayer_android.utils.Constants
 
 /**
@@ -25,7 +24,7 @@ import com.ferdyhaspin.adhan_prayer_android.utils.Constants
 
 class PrayerAdapter(
     private val data: List<Prayer>
-) : RecyclerView.Adapter<PrayerAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<PrayerAdapter.ViewHolder>(), Constants {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -62,13 +61,13 @@ class PrayerAdapter(
 
                 setOnClickListener {
                     if (!disable) {
-                        dialog(context, prayer.name)
+                        dialog(context, prayer)
                     }
                 }
             }
         }
 
-        private fun dialog(context: Context, title: String) {
+        private fun dialog(context: Context, prayer: Prayer) {
             Dialog(context).run {
                 requestWindowFeature(Window.FEATURE_NO_TITLE)
                 window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -77,13 +76,31 @@ class PrayerAdapter(
                 val width = metrics.widthPixels
                 window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-                val mTitle = "Atur Notifikasi $title"
+                val mTitle = "Atur Notifikasi ${prayer.name}"
                 findViewById<TextView>(R.id.tv_title).apply {
                     text = mTitle
                 }
 
                 findViewById<Button>(R.id.btn_cancel).setOnClickListener {
                     dismiss()
+                }
+
+                when (prayer.setting) {
+                    0 -> findViewById<AppCompatRadioButton>(R.id.rb_adzan).isChecked = true
+                    1 -> findViewById<AppCompatRadioButton>(R.id.rb_notif).isChecked = true
+                    2 -> findViewById<AppCompatRadioButton>(R.id.rb_nonaktif).isChecked = true
+                }
+
+                findViewById<RadioGroup>(R.id.rg_setting).setOnCheckedChangeListener { group, checkedId ->
+                    val key = Constants.ALARM_FOR + prayer.key
+                    when (checkedId) {
+//                        R.id.rb_adzan ->
+                    }
+                }
+
+                setOnDismissListener {
+                    val prayAlarmReceiver = PrayAlarmReceiver()
+                    prayAlarmReceiver.setAlarm(context)
                 }
 
                 show()

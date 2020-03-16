@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         //INIT APP
         if (!settings.getBoolean(AppSettings.Key.IS_INIT)) {
             for (key in KEYS) {
-                settings.set(ALARM_FOR + key, true)
+                settings.set(ALARM_FOR + key, 0)
             }
             settings.set(AppSettings.Key.IS_INIT, true)
         }
@@ -58,8 +58,10 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         val list = mutableListOf<Prayer>()
         for (i in 0 until prayerTimes.size) {
             val key = KEYS[i]
+            val name = NAME_ID[i]
             val time = prayerTimes[key]
-            list.add(Prayer(key, key, time, true))
+            val setting = settings.getInt(ALARM_FOR + key)
+            list.add(Prayer(key, name, time, setting))
         }
 
         val mAdapter = PrayerAdapter(list)

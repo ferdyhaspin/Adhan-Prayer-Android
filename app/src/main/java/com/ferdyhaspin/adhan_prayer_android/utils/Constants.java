@@ -23,7 +23,7 @@ public interface Constants {
     long FIVE_MINUTES = ONE_MINUTE * 5;
 
     //EXTRAS
-    String ALARM_FOR = "alarm_for";
+    String ALARM_FOR = "alarm_for_";
     String EXTRA_ALARM_INDEX = "alarm_index";
     String EXTRA_LAST_LOCATION = "last_location";
     String EXTRA_PRAYER_NAME = "prayer_name";
@@ -37,13 +37,13 @@ public interface Constants {
 
     int NOTIFICATION_ID = 2010;
 
-    String FAJR = "Fajr";
-    String SUNRISE = "Sunrise";
-    String DHUHR = "Dhuhr";
-    String ASR = "Asr";
-    String SUNSET = "Sunset";
-    String MAGHRIB = "Maghrib";
-    String ISHA = "Isha";
+    String FAJR = "fajr";
+    String SUNRISE = "sunrise";
+    String DHUHR = "dhuzur";
+    String ASR = "asr";
+    String SUNSET = "sunset";
+    String MAGHRIB = "maghrib";
+    String ISHA = "isha";
 
     String[] KEYS = {FAJR, SUNRISE, DHUHR, ASR, SUNSET, MAGHRIB, ISHA};
     String[] NAME_ID = {"Subuh (Fajr)", "Terbit", "Dzuhur", "Ashar", "Terbenam", "Maghrib", "Isya"};
