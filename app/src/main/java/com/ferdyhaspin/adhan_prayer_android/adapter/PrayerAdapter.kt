@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ferdyhaspin.adhan_prayer_android.R
 import com.ferdyhaspin.adhan_prayer_android.model.Prayer
 import com.ferdyhaspin.adhan_prayer_android.scheduler.PrayAlarmReceiver
+import com.ferdyhaspin.adhan_prayer_android.utils.AppSettings
 import com.ferdyhaspin.adhan_prayer_android.utils.Constants
 
 /**
@@ -23,7 +24,8 @@ import com.ferdyhaspin.adhan_prayer_android.utils.Constants
  */
 
 class PrayerAdapter(
-    private val data: List<Prayer>
+    private val data: List<Prayer>,
+    private val onSettingChanged: OnSettingChanged
 ) : RecyclerView.Adapter<PrayerAdapter.ViewHolder>(), Constants {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,20 +41,30 @@ class PrayerAdapter(
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.init(data[position])
+        holder.init(data[position], position, onSettingChanged)
+    }
+
+    fun changeSetting(position: Int, settingPosition: Int) {
+        data[position].apply {
+            setting = settingPosition
+        }
+        notifyItemChanged(position)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun init(prayer: Prayer) {
+        private lateinit var setting: AppSettings
+
+        fun init(prayer: Prayer, position: Int, onSettingChanged: OnSettingChanged) {
+            setting = AppSettings.getInstance(itemView.context)
             itemView.apply {
                 val disable = prayer.key == Constants.SUNRISE
 
                 findViewById<TextView>(R.id.tv_name).text = prayer.name
                 findViewById<TextView>(R.id.tv_time).text = prayer.time
 
-                findViewById<ImageButton>(R.id.ib_notification).run {
-                    if (disable) {
+                findViewById<ImageView>(R.id.ib_notification).run {
+                    if (disable || prayer.setting == 2) {
                         isEnabled = false
                         background =
                             ContextCompat.getDrawable(context, R.drawable.ic_notification_off)
@@ -61,13 +73,18 @@ class PrayerAdapter(
 
                 setOnClickListener {
                     if (!disable) {
-                        dialog(context, prayer)
+                        dialog(context, prayer, position, onSettingChanged)
                     }
                 }
             }
         }
 
-        private fun dialog(context: Context, prayer: Prayer) {
+        private fun dialog(
+            context: Context,
+            prayer: Prayer,
+            position: Int,
+            onSettingChanged: OnSettingChanged
+        ) {
             Dialog(context).run {
                 requestWindowFeature(Window.FEATURE_NO_TITLE)
                 window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -91,11 +108,17 @@ class PrayerAdapter(
                     2 -> findViewById<AppCompatRadioButton>(R.id.rb_nonaktif).isChecked = true
                 }
 
-                findViewById<RadioGroup>(R.id.rg_setting).setOnCheckedChangeListener { group, checkedId ->
+                findViewById<RadioGroup>(R.id.rg_setting).setOnCheckedChangeListener { _, checkedId ->
                     val key = Constants.ALARM_FOR + prayer.key
-                    when (checkedId) {
-//                        R.id.rb_adzan ->
-                    }
+                    val positionSetting =
+                        when (checkedId) {
+                            R.id.rb_adzan -> 0
+                            R.id.rb_notif -> 1
+                            else -> 2
+                        }
+                    setting.set(key, positionSetting)
+                    onSettingChanged.onChanged(position, positionSetting)
+                    dismiss()
                 }
 
                 setOnDismissListener {
@@ -107,5 +130,9 @@ class PrayerAdapter(
             }
         }
 
+    }
+
+    interface OnSettingChanged {
+        fun onChanged(position: Int, setting: Int)
     }
 }

@@ -18,10 +18,12 @@ import com.ferdyhaspin.adhan_prayer_android.utils.Constants.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCallback {
+class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCallback,
+    PrayerAdapter.OnSettingChanged {
 
     private lateinit var mLocationHelper: LocationHelper
     private lateinit var settings: AppSettings
+    private lateinit var mAdapter: PrayerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +66,16 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
             list.add(Prayer(key, name, time, setting))
         }
 
-        val mAdapter = PrayerAdapter(list)
+        mAdapter = PrayerAdapter(list, this)
         rv_prayers.adapter = mAdapter
         rv_prayers.layoutManager = LinearLayoutManager(this)
         rv_prayers.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
 
         updateAlarmStatus()
+    }
+
+    override fun onChanged(position: Int, setting: Int) {
+        mAdapter.changeSetting(position, setting)
     }
 
     private fun updateAlarmStatus() {

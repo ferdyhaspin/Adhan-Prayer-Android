@@ -27,13 +27,12 @@
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/ib_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@null"
         android:src="@drawable/ic_notification"
         android:tint="@color/colorPrimaryDark" />

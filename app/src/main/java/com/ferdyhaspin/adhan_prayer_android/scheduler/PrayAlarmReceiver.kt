@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
 import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -22,6 +23,7 @@ import com.ferdyhaspin.adhan_prayer_android.utils.PrayTime
 import com.ferdyhaspin.adhan_prayer_android.utils.Utils
 import java.util.*
 import kotlin.math.abs
+
 
 /**
  * Created by ferdyhaspin on 13/03/20.
@@ -238,8 +240,9 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
     }
 
     private fun sendNotification(applicationContext: Context, title: String, time: String) {
-        val soundUri =
+        val soundUri: Uri =
             Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.adhan_trimmed)
+//        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val id = generateRandom()
 
@@ -248,7 +251,6 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent = Intent(applicationContext, MainActivity::class.java)
 
-        //intent.putExtra("notification", data.get("type"));
         val resultPendingIntent = PendingIntent.getActivity(
             applicationContext, id /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
