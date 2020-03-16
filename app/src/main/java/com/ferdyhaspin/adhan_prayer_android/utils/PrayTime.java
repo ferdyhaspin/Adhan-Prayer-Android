@@ -686,6 +686,10 @@ public class PrayTime {
 
     }
 
+    public static LinkedHashMap<String, String> getPrayerTimes(Context context, double lat, double lng) {
+        return getPrayerTimes(context, 0, lat, lng, -1);
+    }
+
     public static LinkedHashMap<String, String> getPrayerTimes(Context context, int index, double lat, double lng) {
         return getPrayerTimes(context, index, lat, lng, -1);
     }
@@ -712,7 +716,7 @@ public class PrayTime {
         } else {
             prayers.setTimeFormat(timeFormat);
         }
-        prayers.setCalcMethod(settings.getCalcMethodSetFor(index));
+        prayers.setCalcMethod(SIHAT);
         prayers.setAsrJuristic(settings.getAsrMethodSetFor(index));
         prayers.setAdjustHighLats(settings.getHighLatitudeAdjustmentFor(index));
 

@@ -23,6 +23,7 @@ public interface Constants {
     long FIVE_MINUTES = ONE_MINUTE * 5;
 
     //EXTRAS
+    String ALARM_FOR = "alarm_for";
     String EXTRA_ALARM_INDEX = "alarm_index";
     String EXTRA_LAST_LOCATION = "last_location";
     String EXTRA_PRAYER_NAME = "prayer_name";

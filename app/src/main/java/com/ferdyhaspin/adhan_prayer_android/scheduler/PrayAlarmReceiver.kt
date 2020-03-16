@@ -12,7 +12,6 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.ferdyhaspin.adhan_prayer_android.R
 import com.ferdyhaspin.adhan_prayer_android.ui.MainActivity
@@ -44,21 +43,19 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         val timePassed =
             prayerTime != -1L && abs(System.currentTimeMillis() - prayerTime) > FIVE_MINUTES
 
-        val settings = AppSettings.getInstance(context)
-        if (settings.isAlarmSetFor(0)) {
-            if (!timePassed) {
-                val time = Utils.convertLongToTime(prayerTime)
-                Log.e(TAG, "name: $prayerName, time: $time")
-                if (prayerName != null)
-                    sendNotification(context, prayerName, time)
-                else
-                    sendNotification(context, "Something when wrong", time)
+        if (!timePassed) {
+            val time = Utils.convertLongToTime(prayerTime)
+            Log.e(TAG, "name: $prayerName, time: $time")
+            if (prayerName != null)
+                sendNotification(context, prayerName, time)
+            else
+                sendNotification(context, "Something when wrong", time)
 //                val service = Intent(context, PraySchedulingService::class.java)
 //                service.putExtra(EXTRA_PRAYER_NAME, prayerName)
 //                service.putExtra(EXTRA_PRAYER_TIME, prayerTime)
 //                // Start the service, keeping the device awake while it is launching.
 //                context.startService(service)
-            }
+
             //SET THE NEXT ALARM
             setAlarm(context)
         }
@@ -74,14 +71,13 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         var then = Calendar.getInstance(TimeZone.getDefault())
         then.timeInMillis = System.currentTimeMillis()
 
-        val alarmIndex = 0
 
         val settings = AppSettings.getInstance(context)
         val lat = settings.latFor
         val long = settings.lngFor
 
         val prayerTimes: LinkedHashMap<String, String> =
-            PrayTime.getPrayerTimes(context, alarmIndex, lat, long)
+            PrayTime.getPrayerTimes(context, lat, long)
         val prayerNames: List<String> = ArrayList(prayerTimes.keys)
 
         var nextAlarmFound = false
@@ -175,8 +171,6 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP
         )
-
-        Toast.makeText(context, "Alarm set", Toast.LENGTH_LONG).show()
     }
 
     fun cancelAlarm(context: Context) {
@@ -205,7 +199,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         )
         removePassiveLocationUpdates(context, locationListenerPassivePendingIntent)
 
-        Toast.makeText(context, "Alarm cancel", Toast.LENGTH_LONG).show()
+        Log.e(TAG, "Alarm cancel")
     }
 
     // END_INCLUDE(cancel_alarm)

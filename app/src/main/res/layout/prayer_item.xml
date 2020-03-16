@@ -2,19 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:gravity="center"
     android:orientation="horizontal">
-
-    <ImageButton
-        android:id="@+id/ib_notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_notification" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -34,5 +27,15 @@
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
+    <ImageButton
+        android:id="@+id/ib_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_notification"
+        android:tint="@color/colorPrimaryDark" />
 
 </LinearLayout>

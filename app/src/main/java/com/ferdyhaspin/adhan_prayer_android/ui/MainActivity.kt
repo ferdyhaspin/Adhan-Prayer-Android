@@ -1,6 +1,7 @@
 package com.ferdyhaspin.adhan_prayer_android.ui
 
 import android.Manifest
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.widget.LinearLayout
@@ -13,8 +14,7 @@ import com.ferdyhaspin.adhan_prayer_android.adapter.PrayerAdapter
 import com.ferdyhaspin.adhan_prayer_android.model.Prayer
 import com.ferdyhaspin.adhan_prayer_android.scheduler.PrayAlarmReceiver
 import com.ferdyhaspin.adhan_prayer_android.utils.*
-import com.ferdyhaspin.adhan_prayer_android.utils.Constants.KEYS
-import com.ferdyhaspin.adhan_prayer_android.utils.Constants.LOCATION_FRAGMENT
+import com.ferdyhaspin.adhan_prayer_android.utils.Constants.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -27,18 +27,13 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         super.onCreate(savedInstanceState)
         settings = AppSettings.getInstance(this)
         //INIT APP
-//        if (!settings.getBoolean(AppSettings.Key.IS_INIT)) {
-//            for (key in KEYS) {
-//                settings.set(settings.getKeyFor(AppSettings.Key.IS_ALARM_SET, 0), true)
-//                settings.set(settings.getKeyFor(AppSettings.Key.IS_FAJR_ALARM_SET, 0), true)
-//                settings.set(settings.getKeyFor(AppSettings.Key.IS_DHUHR_ALARM_SET, 0), true)
-//                settings.set(settings.getKeyFor(AppSettings.Key.IS_ASR_ALARM_SET, 0), true)
-//                settings.set(settings.getKeyFor(AppSettings.Key.IS_MAGHRIB_ALARM_SET, 0), true)
-//                settings.set(settings.getKeyFor(AppSettings.Key.IS_ISHA_ALARM_SET, 0), true)
-//            }
-//            settings.set(AppSettings.Key.USE_ADHAN, true)
-//            settings.set(AppSettings.Key.IS_INIT, true)
-//        }
+        if (!settings.getBoolean(AppSettings.Key.IS_INIT)) {
+            for (key in KEYS) {
+                settings.set(ALARM_FOR + key, true)
+            }
+            settings.set(AppSettings.Key.USE_ADHAN, true)
+            settings.set(AppSettings.Key.IS_INIT, true)
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -58,9 +53,8 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
     }
 
     private fun init() {
-        settings.setCalcMethodFor(0, PrayTime.SIHAT)
         val prayerTimes: LinkedHashMap<String, String> =
-            PrayTime.getPrayerTimes(this,0, settings.latFor, settings.lngFor)
+            PrayTime.getPrayerTimes(this, settings.latFor, settings.lngFor)
 
         val list = mutableListOf<Prayer>()
         for (i in 0 until prayerTimes.size) {
@@ -93,5 +87,19 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         settings.latFor = location.latitude
         settings.lngFor = location.longitude
         init()
+        setLocationName(location.latitude, location.longitude)
+    }
+
+    private fun setLocationName(lat: Double, long: Double) {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val address = geocoder.getFromLocation(lat, long, 1)
+
+        var city: String? = address[0].subAdminArea
+        if (city == null)
+            city = address[0].locality
+        val street = address[0].subLocality
+
+        val locationName = "$street - $city"
+        tv_location.text = locationName
     }
 }

@@ -1,12 +1,10 @@
 package com.ferdyhaspin.adhan_prayer_android.adapter
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ferdyhaspin.adhan_prayer_android.R
 import com.ferdyhaspin.adhan_prayer_android.model.Prayer
@@ -48,10 +46,7 @@ class PrayerAdapter(
                 findViewById<ImageButton>(R.id.ib_notification).apply {
                     if (prayer.key == Constants.SUNRISE || prayer.key == Constants.SUNSET) {
                         isEnabled = false
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            backgroundTintList =
-                                ContextCompat.getColorStateList(context, R.color.colorGrey)
-                        }
+                        setBackgroundResource(R.drawable.ic_notification_off)
                     }
                 }
             }
