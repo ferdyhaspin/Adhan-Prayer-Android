@@ -47,10 +47,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         if (!timePassed) {
             val time = Utils.convertLongToTime(prayerTime)
             Log.e(TAG, "name: $prayerName, time: $time")
-            if (prayerName != null)
-                sendNotification(context, prayerName, time)
-            else
-                sendNotification(context, "Something when wrong", time)
+            if (prayerName != null) sendNotification(context, prayerName, time)
 //                val service = Intent(context, PraySchedulingService::class.java)
 //                service.putExtra(EXTRA_PRAYER_NAME, prayerName)
 //                service.putExtra(EXTRA_PRAYER_TIME, prayerTime)
@@ -85,7 +82,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         var nameOfPrayerFound = ""
 
         for (prayer in prayerNames) {
-            if (prayer != SUNRISE) {
+            if (prayer != SUNRISE && prayer != SUNSET && settings.getInt(ALARM_FOR + prayer) != 2) {
                 val time = prayerTimes[prayer]
 
                 if (time != null) {
@@ -104,7 +101,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
 
         if (!nextAlarmFound) {
             for (prayer in prayerNames) {
-                if (prayer != SUNRISE) {
+                if (prayer != SUNRISE && prayer != SUNSET && settings.getInt(ALARM_FOR + prayer) != 2) {
                     val time = prayerTimes[prayer]
 
                     if (time != null) {
@@ -239,10 +236,23 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         return cal
     }
 
-    private fun sendNotification(applicationContext: Context, title: String, time: String) {
-        val soundUri: Uri =
-            Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.adhan_trimmed)
-//        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    private fun sendNotification(applicationContext: Context, key: String, time: String) {
+        var position = 0
+        for (i in KEYS.indices) {
+            if (KEYS[i] == key)
+                position = i
+        }
+        val title = NAME_ID[position]
+
+        val settings = AppSettings.getInstance(applicationContext)
+        val soundUri =
+            if (settings.getInt(ALARM_FOR + key) == 2)
+                if (key == FAJR)
+                    Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.adhan_trimmed)
+                else
+                    Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.adhan_fajr_trimmed)
+            else
+                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val id = generateRandom()
 

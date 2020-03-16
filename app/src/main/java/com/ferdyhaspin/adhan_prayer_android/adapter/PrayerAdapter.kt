@@ -26,7 +26,7 @@ import com.ferdyhaspin.adhan_prayer_android.utils.Constants
 class PrayerAdapter(
     private val data: List<Prayer>,
     private val onSettingChanged: OnSettingChanged
-) : RecyclerView.Adapter<PrayerAdapter.ViewHolder>(), Constants {
+) : RecyclerView.Adapter<PrayerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -58,7 +58,7 @@ class PrayerAdapter(
         fun init(prayer: Prayer, position: Int, onSettingChanged: OnSettingChanged) {
             setting = AppSettings.getInstance(itemView.context)
             itemView.apply {
-                val disable = prayer.key == Constants.SUNRISE
+                val disable = prayer.key == Constants.SUNRISE || prayer.key == Constants.SUNSET
 
                 findViewById<TextView>(R.id.tv_name).text = prayer.name
                 findViewById<TextView>(R.id.tv_time).text = prayer.time

@@ -60,10 +60,12 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         val list = mutableListOf<Prayer>()
         for (i in 0 until prayerTimes.size) {
             val key = KEYS[i]
-            val name = NAME_ID[i]
-            val time = prayerTimes[key]
-            val setting = settings.getInt(ALARM_FOR + key)
-            list.add(Prayer(key, name, time, setting))
+            if (key != SUNSET){
+                val name = NAME_ID[i]
+                val time = prayerTimes[key]
+                val setting = settings.getInt(ALARM_FOR + key)
+                list.add(Prayer(key, name, time, setting))
+            }
         }
 
         mAdapter = PrayerAdapter(list, this)
