@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -30,18 +29,9 @@ public class PrayTime {
     private double JDate; // Julian date
     // ------------------------------------------------------------
     // Calculation Methods
-    private static final int JAFARI = 0; // Ithna Ashari
-    private static final int KARACHI = 1; // University of Islamic Sciences, KARACHI
-    private static final int ISNA = 2; // Islamic Society of North America (ISNA)
-    static final int MWL = 3; // Muslim World League (MWL)
-    private static final int MAKKAH = 4; // Umm al-Qura, MAKKAH
-    private static final int EGYPT = 5; // Egyptian General Authority of Survey
-    private static final int CUSTOM = 7; // CUSTOM Setting
-    private static final int TEHRAN = 6; // Institute of Geophysics, University of TEHRAN
     private static final int SIHAT = 8;
     // Juristic Methods
     static final int SHAFII = 0; // SHAFII (standard)
-    public static final int HANAFI = 1; // HANAFI
     // Adjusting Methods for Higher Latitudes
     private static final int NONE = 0; // No adjustment
     private static final int MID_NIGHT = 1; // middle of night
@@ -68,7 +58,6 @@ public class PrayTime {
      * selector (0 = angle; 1 = minutes after maghrib) iv : isha parameter value
      * (in angle or minutes)
      */
-    private double[] prayerTimesCurrent;
     private int[] offsets;
 
     PrayTime() {
@@ -109,39 +98,7 @@ public class PrayTime {
          * selector (0 = angle; 1 = minutes after maghrib) iv : isha parameter
          * value (in angle or minutes)
          */
-        methodParams = new HashMap<Integer, double[]>();
-
-        // JAFARI
-        double[] Jvalues = {16, 0, 4, 0, 14};
-        methodParams.put(JAFARI, Jvalues);
-
-        // KARACHI
-        double[] Kvalues = {18, 1, 0, 0, 18};
-        methodParams.put(KARACHI, Kvalues);
-
-        // ISNA
-        double[] Ivalues = {15, 1, 0, 0, 15};
-        methodParams.put(ISNA, Ivalues);
-
-        // MWL
-        double[] MWvalues = {18, 1, 0, 0, 17};
-        methodParams.put(MWL, MWvalues);
-
-        // MAKKAH
-        double[] MKvalues = {18.5, 1, 0, 1, 90};
-        methodParams.put(MAKKAH, MKvalues);
-
-        // EGYPT
-        double[] Evalues = {19.5, 1, 0, 0, 17.5};
-        methodParams.put(EGYPT, Evalues);
-
-        // TEHRAN
-        double[] Tvalues = {17.7, 0, 4.5, 0, 14};
-        methodParams.put(TEHRAN, Tvalues);
-
-        // CUSTOM
-        double[] Cvalues = {18, 1, 0, 0, 17};
-        methodParams.put(CUSTOM, Cvalues);
+        methodParams = new HashMap<>();
 
         // SIHAT/KEMENAG
         double[] Svalues = {20, 1, 0, 0, 18};
@@ -204,12 +161,6 @@ public class PrayTime {
         return radiansToDegrees(val);
     }
 
-    // degree arctan
-    private double darctan(double x) {
-        double val = Math.atan(x);
-        return radiansToDegrees(val);
-    }
-
     // degree arctan2
     private double darctan2(double y, double x) {
         double val = Math.atan2(y, x);
@@ -220,29 +171,6 @@ public class PrayTime {
     private double darccot(double x) {
         double val = Math.atan2(1.0, x);
         return radiansToDegrees(val);
-    }
-
-    // ---------------------- Time-Zone Functions -----------------------
-    // compute local time-zone for a specific date
-    private double getTimeZone1() {
-        TimeZone timez = TimeZone.getDefault();
-        double hoursDiff = (timez.getRawOffset() / 1000.0) / 3600;
-        return hoursDiff;
-    }
-
-    // compute base time-zone of the system
-    private double getBaseTimeZone() {
-        TimeZone timez = TimeZone.getDefault();
-        double hoursDiff = (timez.getRawOffset() / 1000.0) / 3600;
-        return hoursDiff;
-
-    }
-
-    // detect daylight saving in a given date
-    private double detectDaylightSaving() {
-        TimeZone timez = TimeZone.getDefault();
-        double hoursDiff = timez.getDSTSavings();
-        return hoursDiff;
     }
 
     // ---------------------- Julian Date Functions -----------------------
@@ -257,24 +185,9 @@ public class PrayTime {
 
         double B = 2 - A + Math.floor(A / 4.0);
 
-        double JD = Math.floor(365.25 * (year + 4716))
+        return Math.floor(365.25 * (year + 4716))
                 + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
-
-        return JD;
     }
-
-    // convert a calendar date to julian date (second method)
-    private double calcJD(int year, int month, int day) {
-        double J1970 = 2440588.0;
-        Date date = new Date(year, month - 1, day);
-
-        double ms = date.getTime(); // # of milliseconds since midnight Jan 1,
-        // 1970
-        double days = Math.floor(ms / (1000.0 * 60.0 * 60.0 * 24.0));
-        return J1970 + days - 0.5;
-
-    }
-
     // ---------------------- Calculation Functions -----------------------
     // References:
     // http://www.ummah.net/astronomy/saltime
@@ -303,21 +216,18 @@ public class PrayTime {
 
     // compute equation of time
     private double equationOfTime(double jd) {
-        double eq = sunPosition(jd)[1];
-        return eq;
+        return sunPosition(jd)[1];
     }
 
     // compute declination angle of sun
     private double sunDeclination(double jd) {
-        double d = sunPosition(jd)[0];
-        return d;
+        return sunPosition(jd)[0];
     }
 
     // compute mid-day (Dhuhr, Zawal) time
     private double computeMidDay(double t) {
         double T = equationOfTime(this.getJDate() + t);
-        double Z = fixhour(12 - T);
-        return Z;
+        return fixhour(12 - T);
     }
 
     // compute time for a given angle G
@@ -360,8 +270,8 @@ public class PrayTime {
     }
 
     // return prayer times for a given date
-    public ArrayList<String> getPrayerTimes(Calendar date, double latitude,
-                                            double longitude, double tZone) {
+    private ArrayList<String> getPrayerTimes(Calendar date, double latitude,
+                                             double longitude, double tZone) {
 
         int year = date.get(Calendar.YEAR);
         int month = date.get(Calendar.MONTH);
@@ -370,56 +280,8 @@ public class PrayTime {
         return getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone);
     }
 
-    // set custom values for calculation parameters
-    private void setCustomParams(double[] params) {
-
-        for (int i = 0; i < 5; i++) {
-            if (params[i] == -1) {
-                params[i] = methodParams.get(this.getCalcMethod())[i];
-                methodParams.put(CUSTOM, params);
-            } else {
-                methodParams.get(CUSTOM)[i] = params[i];
-            }
-        }
-        this.setCalcMethod(CUSTOM);
-    }
-
-    // set the angle for calculating Fajr
-    public void setFajrAngle(double angle) {
-        double[] params = {angle, -1, -1, -1, -1};
-        setCustomParams(params);
-    }
-
-    // set the angle for calculating Maghrib
-    public void setMaghribAngle(double angle) {
-        double[] params = {-1, 0, angle, -1, -1};
-        setCustomParams(params);
-
-    }
-
-    // set the angle for calculating Isha
-    public void setIshaAngle(double angle) {
-        double[] params = {-1, -1, -1, 0, angle};
-        setCustomParams(params);
-
-    }
-
-    // set the minutes after Sunset for calculating Maghrib
-    public void setMaghribMinutes(double minutes) {
-        double[] params = {-1, 1, minutes, -1, -1};
-        setCustomParams(params);
-
-    }
-
-    // set the minutes after Maghrib for calculating Isha
-    public void setIshaMinutes(double minutes) {
-        double[] params = {-1, -1, -1, 1, minutes};
-        setCustomParams(params);
-
-    }
-
     // convert double hours to 24h format
-    public String floatToTime24(double time) {
+    private String floatToTime24(double time) {
 
         String result;
 
@@ -444,7 +306,7 @@ public class PrayTime {
     }
 
     // convert double hours to 12h format
-    public String floatToTime12(double time, boolean noSuffix) {
+    private String floatToTime12(double time, boolean noSuffix) {
 
         if (Double.isNaN(time)) {
             return InvalidTime;
@@ -480,11 +342,6 @@ public class PrayTime {
 
         return result;
 
-    }
-
-    // convert double hours to 12h format with no suffix
-    public String floatToTime12NS(double time) {
-        return floatToTime12(time, true);
     }
 
     // ---------------------- Compute Prayer Times -----------------------
@@ -626,15 +483,14 @@ public class PrayTime {
 
     // Tune timings for adjustments
     // Set time offsets
-    public void tune(int[] offsetTimes) {
+    private void tune(int[] offsetTimes) {
 
-        for (int i = 0; i < offsetTimes.length; i++) { // offsetTimes length
-            // should be 7 in order
-            // of Fajr, Sunrise,
-            // Dhuhr, Asr, Sunset,
-            // Maghrib, Isha
-            this.offsets[i] = offsetTimes[i];
-        }
+        // offsetTimes length
+        // should be 7 in order
+        // of Fajr, Sunrise,
+        // Dhuhr, Asr, Sunset,
+        // Maghrib, Isha
+        System.arraycopy(offsetTimes, 0, this.offsets, 0, offsetTimes.length);
     }
 
     private double[] tuneTimes(double[] times) {
@@ -647,14 +503,6 @@ public class PrayTime {
 
 
     public static LinkedHashMap<String, String> getPrayerTimes(Context context, double lat, double lng) {
-        return getPrayerTimes(context, 0, lat, lng, -1);
-    }
-
-    public static LinkedHashMap<String, String> getPrayerTimes(Context context, int index, double lat, double lng) {
-        return getPrayerTimes(context, index, lat, lng, -1);
-    }
-
-    private static LinkedHashMap<String, String> getPrayerTimes(Context context, int index, double lat, double lng, int timeFormat) {
         AppSettings settings = AppSettings.getInstance(context);
 
         //Get time zone instance
@@ -665,18 +513,15 @@ public class PrayTime {
 
         //Get offset from UTC, accounting for DST
         int defaultTzOffsetMs = defaultCalc.get(Calendar.ZONE_OFFSET) + defaultCalc.get(Calendar.DST_OFFSET);
-        double timezone = defaultTzOffsetMs / (1000 * 60 * 60);
+        double timezone = defaultTzOffsetMs / (3600000);
         // Test Prayer times here
         PrayTime prayers = new PrayTime();
 
-        if (timeFormat == -1) {
-            prayers.setTimeFormat(settings.getTimeFormatFor(index));
-        } else {
-            prayers.setTimeFormat(timeFormat);
-        }
+        prayers.setTimeFormat(settings.getTimeFormatFor(0));
+
         prayers.setCalcMethod(SIHAT);
-        prayers.setAsrJuristic(settings.getAsrMethodSetFor(index));
-        prayers.setAdjustHighLats(settings.getHighLatitudeAdjustmentFor(index));
+        prayers.setAsrJuristic(settings.getAsrMethodSetFor(0));
+        prayers.setAdjustHighLats(settings.getHighLatitudeAdjustmentFor(0));
 
         int[] offsets = {2, -2, 3, 2, 2, 2, 2}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
         prayers.tune(offsets);

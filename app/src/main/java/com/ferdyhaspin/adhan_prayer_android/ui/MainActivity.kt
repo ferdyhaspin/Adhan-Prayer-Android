@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
     }
 
     private fun getPrayerName(prayerTimes: LinkedHashMap<String, String>): String {
-        val settings = AppSettings.getInstance()
         val prayerNames: List<String> = ArrayList(prayerTimes.keys)
         val now = Calendar.getInstance(TimeZone.getDefault())
         now.timeInMillis = System.currentTimeMillis()

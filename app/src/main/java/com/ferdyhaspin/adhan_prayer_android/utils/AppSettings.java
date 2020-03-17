@@ -269,10 +269,6 @@ public class AppSettings {
         set(getKeyFor(Key.IS_ALARM_SET, index), alarmOn);
     }
 
-    public int getCalcMethodSetFor(int index) {
-        return getInt(getKeyFor(Key.CALC_METHOD, index), PrayTime.MWL);
-    }
-
     public void setCalcMethodFor(int index, int value) {
         set(getKeyFor(Key.CALC_METHOD, index), value);
     }

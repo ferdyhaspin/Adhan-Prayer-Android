@@ -18,9 +18,9 @@ object Utils {
         return format.format(date)
     }
 
-    private fun calculationTime(context: Context, time: String, minute: Int): String {
+    private fun calculationTime(context: Context, prayerTime: String, adjustment: Int): String {
         return try {
-            var localTime = time
+            var localTime = prayerTime
             val df = SimpleDateFormat("HH:mm", Locale.ENGLISH)
             if (!DateFormat.is24HourFormat(context)) {
                 val date12Format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
@@ -32,7 +32,7 @@ object Utils {
             val cal = Calendar.getInstance().apply {
                 if (d != null)
                     this.time = d
-                add(Calendar.MINUTE, minute)
+                add(Calendar.MINUTE, adjustment)
             }
             df.format(cal.time)
         } catch (e: ParseException) {
