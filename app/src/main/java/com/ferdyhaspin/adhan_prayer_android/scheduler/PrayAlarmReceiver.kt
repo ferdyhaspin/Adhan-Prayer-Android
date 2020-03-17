@@ -12,6 +12,7 @@ import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.text.format.DateFormat
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.ferdyhaspin.adhan_prayer_android.R
@@ -21,6 +22,7 @@ import com.ferdyhaspin.adhan_prayer_android.utils.Constants
 import com.ferdyhaspin.adhan_prayer_android.utils.Constants.*
 import com.ferdyhaspin.adhan_prayer_android.utils.PrayTime
 import com.ferdyhaspin.adhan_prayer_android.utils.Utils
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -86,7 +88,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
                 val time = prayerTimes[prayer]
 
                 if (time != null) {
-                    then = getCalendarFromPrayerTime(then, time)
+                    then = getCalendarFromPrayerTime(context, then, time)
 
                     if (then.after(now)) {
                         // this is the alarm to set
@@ -105,7 +107,7 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
                     val time = prayerTimes[prayer]
 
                     if (time != null) {
-                        then = getCalendarFromPrayerTime(then, time)
+                        then = getCalendarFromPrayerTime(context, then, time)
 
                         if (then.before(now)) {
                             // this is the alarm to set
@@ -227,8 +229,19 @@ class PrayAlarmReceiver : BroadcastReceiver(), Constants {
         }
     }
 
-    private fun getCalendarFromPrayerTime(cal: Calendar, prayerTime: String): Calendar {
-        val time = prayerTime.split(":").toTypedArray()
+    private fun getCalendarFromPrayerTime(
+        context: Context,
+        cal: Calendar,
+        prayerTime: String
+    ): Calendar {
+        var strTime = prayerTime
+        if (!DateFormat.is24HourFormat(context)) {
+            val display = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val parse = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            val date = parse.parse(strTime)
+            if (date != null) strTime = display.format(date)
+        }
+        val time = strTime.split(":").toTypedArray()
         cal[Calendar.HOUR_OF_DAY] = Integer.valueOf(time[0])
         cal[Calendar.MINUTE] = Integer.valueOf(time[1])
         cal[Calendar.SECOND] = 0

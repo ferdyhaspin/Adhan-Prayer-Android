@@ -4,6 +4,7 @@ import android.Manifest
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.ferdyhaspin.adhan_prayer_android.scheduler.PrayAlarmReceiver
 import com.ferdyhaspin.adhan_prayer_android.utils.*
 import com.ferdyhaspin.adhan_prayer_android.utils.Constants.*
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCallback,
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
             }
         }
 
-        mAdapter = PrayerAdapter(list, this, Utils.getPrayerName(prayerTimes))
+        mAdapter = PrayerAdapter(list, this, getPrayerName(prayerTimes))
         rv_prayers.adapter = mAdapter
         rv_prayers.layoutManager = LinearLayoutManager(this)
         rv_prayers.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
@@ -110,5 +112,79 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
 
         val locationName = "$street - $city"
         tv_location.text = locationName
+    }
+
+    fun getPrayerName(prayerTimes: LinkedHashMap<String, String>): String {
+        val settings = AppSettings.getInstance()
+        val prayerNames: List<String> = ArrayList(prayerTimes.keys)
+        val now = Calendar.getInstance(TimeZone.getDefault())
+        now.timeInMillis = System.currentTimeMillis()
+
+        var then = Calendar.getInstance(TimeZone.getDefault())
+        then.timeInMillis = System.currentTimeMillis()
+
+        var nextAlarmFound = false
+        var nameOfPrayerFound = ""
+
+        for (prayer in prayerNames) {
+            if (prayer != SUNRISE && prayer != SUNSET && settings.getInt(
+                    ALARM_FOR + prayer
+                ) != 2
+            ) {
+                val time = prayerTimes[prayer]
+
+                if (time != null) {
+                    then = getCalendarFromPrayerTime(then, time)
+
+                    if (then.after(now)) {
+                        // this is the alarm to set
+                        nameOfPrayerFound = prayer
+                        nextAlarmFound = true
+                        break
+                    }
+                }
+            }
+
+        }
+
+        if (!nextAlarmFound) {
+            for (prayer in prayerNames) {
+                if (prayer != SUNRISE && prayer != SUNSET && settings.getInt(
+                        ALARM_FOR + prayer
+                    ) != 2
+                ) {
+                    val time = prayerTimes[prayer]
+
+                    if (time != null) {
+                        then = getCalendarFromPrayerTime(then, time)
+
+                        if (then.before(now)) {
+                            // this is the alarm to set
+                            nameOfPrayerFound = prayer
+                            then.add(Calendar.DAY_OF_YEAR, 1)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        return nameOfPrayerFound
+    }
+
+    private fun getCalendarFromPrayerTime(cal: Calendar, prayerTime: String): Calendar {
+        var strTime = prayerTime
+        if (!DateFormat.is24HourFormat(this)) {
+            val display = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val parse = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            val date = parse.parse(strTime)
+            if (date != null) strTime = display.format(date)
+        }
+        val time = strTime.split(":").toTypedArray()
+        cal[Calendar.HOUR_OF_DAY] = Integer.valueOf(time[0])
+        cal[Calendar.MINUTE] = Integer.valueOf(time[1])
+        cal[Calendar.SECOND] = 0
+        cal[Calendar.MILLISECOND] = 0
+        return cal
     }
 }
