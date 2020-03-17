@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         tv_location.text = locationName
     }
 
-    fun getPrayerName(prayerTimes: LinkedHashMap<String, String>): String {
+    private fun getPrayerName(prayerTimes: LinkedHashMap<String, String>): String {
         val settings = AppSettings.getInstance()
         val prayerNames: List<String> = ArrayList(prayerTimes.keys)
         val now = Calendar.getInstance(TimeZone.getDefault())
@@ -127,10 +127,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
         var nameOfPrayerFound = ""
 
         for (prayer in prayerNames) {
-            if (prayer != SUNRISE && prayer != SUNSET && settings.getInt(
-                    ALARM_FOR + prayer
-                ) != 2
-            ) {
+            if (prayer != SUNRISE && prayer != SUNSET) {
                 val time = prayerTimes[prayer]
 
                 if (time != null) {
@@ -149,10 +146,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationHelper.LocationCall
 
         if (!nextAlarmFound) {
             for (prayer in prayerNames) {
-                if (prayer != SUNRISE && prayer != SUNSET && settings.getInt(
-                        ALARM_FOR + prayer
-                    ) != 2
-                ) {
+                if (prayer != SUNRISE && prayer != SUNSET) {
                     val time = prayerTimes[prayer]
 
                     if (time != null) {

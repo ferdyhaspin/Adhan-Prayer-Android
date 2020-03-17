@@ -5,11 +5,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -36,14 +37,15 @@
             android:name=".scheduler.PrayBootReceiver"
             android:enabled="true">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <!--For HTC devices-->
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
