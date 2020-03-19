@@ -39,7 +39,7 @@ class LocationProvider : Fragment() {
         }
     }
 
-    fun checkLocation() {
+    fun getLocation() {
         val manager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             mLocationProviderCallback.onGPSisDisable()
@@ -65,8 +65,8 @@ class LocationProvider : Fragment() {
     private fun getLocationUpdates() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         locationRequest = LocationRequest()
-        locationRequest.interval = 50000
-        locationRequest.fastestInterval = 50000
+        locationRequest.interval = 100
+        locationRequest.fastestInterval = 100
         locationRequest.smallestDisplacement = 170f //170 m = 0.1 mile
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY //according to your app
 

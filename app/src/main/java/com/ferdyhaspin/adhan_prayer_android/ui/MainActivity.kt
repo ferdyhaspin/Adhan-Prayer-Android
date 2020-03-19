@@ -58,8 +58,7 @@ class MainActivity : AppCompatActivity(), Constants, LocationProvider.LocationPr
 
     override fun onResume() {
         super.onResume()
-//        mLocationHelper.checkLocationPermissions()
-        mLocationProvider.checkLocation()
+        mLocationProvider.getLocation()
     }
 
     private fun init() {

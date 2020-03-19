@@ -1,3 +1,26 @@
+//--------------------- Copyright Block ----------------------
+/*
+
+PrayTime.java: Prayer Times Calculator (ver 1.0)
+Copyright (C) 2007-2010 PrayTimes.org
+
+Java Code By: Hussain Ali Khan
+Original JS Code By: Hamid Zarrabi-Zadeh
+
+License: GNU LGPL v3.0
+
+TERMS OF USE:
+	Permission is granted to use this code, with or
+	without modification, in any website or application
+	provided that credit is given to the original work
+	with a link back to PrayTimes.org.
+
+This program is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY.
+
+PLEASE DO NOT REMOVE THIS COPYRIGHT BLOCK.
+
+*/
 package com.ferdyhaspin.adhan_prayer_android.utils;
 
 import android.content.Context;
@@ -188,6 +211,7 @@ public class PrayTime {
         return Math.floor(365.25 * (year + 4716))
                 + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
     }
+
     // ---------------------- Calculation Functions -----------------------
     // References:
     // http://www.ummah.net/astronomy/saltime
